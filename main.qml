@@ -14,6 +14,7 @@ ApplicationWindow {
     property var nantes : QtPositioning.coordinate(47.2172500, -1.5533600)
     property var iTech : QtPositioning.coordinate(47.223967, -1.637279)
 
+
     Plugin{
         id:plug
         name:"mapbox"
@@ -96,21 +97,27 @@ ApplicationWindow {
             }
 
         }
-        MapCircle{
-            id:nanCenter
-            color : "red"
-            center : nantes
-            radius:10
+
+        ListModel{
+           id: gpsLocation
+           ListElement{lat: 47.2172500; longitude: -1.5533600}
+           ListElement{lat: 47.223967; longitude: -1.637279}
         }
-        MapQuickItem{
-            id:iTechPos
-            coordinate: iTech
-            sourceItem: Rectangle{
-                color : "green"
-                width : 100
-                height : 100
-                radius: 100
+
+        MapItemView {
+            model: gpsLocation
+            delegate: MapQuickItem {
+                coordinate: QtPositioning.coordinate(lat, longitude)
+                Component.onCompleted: {console.log(lat);}
+                anchorPoint.x: image.width * 0.5
+                anchorPoint.y: image.height
+
+                sourceItem: Column {
+                    Image { id: image; source: "marker.png" }
+                    Text { text: title; font.bold: true }
+                }
             }
         }
+
     }
 }
