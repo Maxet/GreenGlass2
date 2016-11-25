@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.0
 import QtPositioning 5.3
 import QtLocation 5.6
 
+
 ApplicationWindow {
     visible: true
     width: 640
@@ -21,10 +22,12 @@ ApplicationWindow {
         PluginParameter{
             name:"mapbox.access_token"
             value:"pk.eyJ1IjoiY2hhcmJ5IiwiYSI6Ijc0ZTc1NjA5YjhlZTJiNGU1NzQ2OWFiYjNlYmYxMGNiIn0.mtjd_F2G1M81vCULJWzhGQ"
+//            value:"pk.eyJ1IjoicGFkb3ciLCJhIjoiY2l2eGo0MDBoMDAxYTJ6bzRwMW9sOWs1MCJ9.mPm-3OFYzw2ZP1AkX2gUVQ"
         }
         PluginParameter{
             name:"mapbox.map_id"
             value:"mapbox.mapbox-streets-v7"
+//            value:"mapbox://styles/mapbox/basic"
         }
     }
 
@@ -35,6 +38,17 @@ ApplicationWindow {
         property real zoum : 15.0
         center: test? nantes: src.position.coordinate
         zoomLevel: this.zoum
+        onZoomLevelChanged: this.zoum = Math.round(zoomLevel * 100) / 100
+        Button{
+            id:addLocation
+            anchors.top:map.top
+            anchors.right: map.right
+            text : "add"
+            width:50
+            height : 50
+
+            onClicked: gpsLocation.append({lat: 47.2185000,  longitude: -1.9533600,  title: "Ici", marker: "marker.png"})
+        }
         Column{
             id:allZoom
             anchors.bottom:map.bottom
@@ -100,8 +114,8 @@ ApplicationWindow {
 
         ListModel{
            id: gpsLocation
-           ListElement{lat: 47.2172500; longitude: -1.5533600}
-           ListElement{lat: 47.223967; longitude: -1.637279}
+           ListElement{lat: 47.2172500; longitude: -1.5533600; title: "Nantes"; marker: "marker.png"}
+           ListElement{lat: 47.223967; longitude: -1.637279; title: "Itechsup"; marker: "marker.png"}
         }
 
         MapItemView {
@@ -113,7 +127,7 @@ ApplicationWindow {
                 anchorPoint.y: image.height
 
                 sourceItem: Column {
-                    Image { id: image; source: "marker.png" }
+                    Image { id: image; source: marker}
                     Text { text: title; font.bold: true }
                 }
             }
